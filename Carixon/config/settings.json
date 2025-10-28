@@ -1,0 +1,38 @@
+{
+  "language": "cs",
+  "theme": "dark",
+  "company": {
+    "name": "",
+    "ico": "",
+    "dic": "",
+    "address": "",
+    "email": "",
+    "phone": ""
+  },
+  "invoice": {
+    "series": "{year}/{month}/{number}",
+    "due_days": 14,
+    "bank_account": "",
+    "iban": "",
+    "bic": ""
+  },
+  "smtp": {
+    "host": "",
+    "port": 587,
+    "user": "",
+    "password": "",
+    "use_tls": true
+  },
+  "sync": {
+    "google_service_account": "config/sheets_credentials.json",
+    "sheet_id": "",
+    "enabled": false
+  },
+  "server": {
+    "enabled": false,
+    "url": "http://localhost:9000",
+    "api_key": "",
+    "tls": false
+  },
+  "diagnostics_enabled": false
+}
