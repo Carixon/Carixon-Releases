@@ -1,12 +1,10 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from datetime import datetime
-from pathlib import Path
 from typing import Generator
 
-from sqlalchemy import event, text
-from sqlalchemy.engine import Engine
+from sqlalchemy import event
+from sqlalchemy.engine import Connection, Engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from ..utils.logger import get_logger
@@ -57,63 +55,67 @@ def session_scope() -> Generator[Session, None, None]:
         session.close()
 
 
+def _configure_full_text(conn: Connection) -> None:
+    has_customers = conn.exec_driver_sql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='customers'"
+    ).fetchone()
+
+    if not has_customers:
+        LOGGER.warning(
+            "Customers table missing during FTS configuration; skipping trigger installation."
+        )
+        return
+
+    conn.exec_driver_sql(
+        """
+        CREATE VIRTUAL TABLE IF NOT EXISTS customers_fts USING fts5(
+            customer_id UNINDEXED,
+            full_name,
+            email,
+            phone,
+            notes,
+            content='customers',
+            content_rowid='id'
+        )
+        """
+    )
+
+    conn.exec_driver_sql(
+        """
+        CREATE TRIGGER IF NOT EXISTS customers_ai AFTER INSERT ON customers BEGIN
+            INSERT INTO customers_fts(rowid, customer_id, full_name, email, phone, notes)
+            VALUES (new.id, new.id, new.first_name || ' ' || new.last_name, new.email, new.phone, new.notes);
+        END;
+        """
+    )
+
+    conn.exec_driver_sql(
+        """
+        CREATE TRIGGER IF NOT EXISTS customers_ad AFTER DELETE ON customers BEGIN
+            INSERT INTO customers_fts(customers_fts, rowid, customer_id, full_name, email, phone, notes)
+            VALUES('delete', old.id, old.id, old.first_name || ' ' || old.last_name, old.email, old.phone, old.notes);
+        END;
+        """
+    )
+
+    conn.exec_driver_sql(
+        """
+        CREATE TRIGGER IF NOT EXISTS customers_au AFTER UPDATE ON customers BEGIN
+            INSERT INTO customers_fts(customers_fts, rowid, customer_id, full_name, email, phone, notes)
+            VALUES('delete', old.id, old.id, old.first_name || ' ' || old.last_name, old.email, old.phone, old.notes);
+            INSERT INTO customers_fts(rowid, customer_id, full_name, email, phone, notes)
+            VALUES (new.id, new.id, new.first_name || ' ' || new.last_name, new.email, new.phone, new.notes);
+        END;
+        """
+    )
+
+
 def init_db() -> None:
     from . import models  # noqa: WPS433 - import to register models
 
-    Base.metadata.create_all(bind=ENGINE)
-
-    # Configure FTS virtual tables
-    with ENGINE.connect() as conn:
-        conn.execute(
-            text(
-                """
-                CREATE VIRTUAL TABLE IF NOT EXISTS customers_fts USING fts5(
-                    customer_id UNINDEXED,
-                    full_name,
-                    email,
-                    phone,
-                    notes,
-                    content='customers',
-                    content_rowid='id'
-                )
-                """
-            )
-        )
-        conn.commit()
-
-        conn.execute(
-            text(
-                """
-                CREATE TRIGGER IF NOT EXISTS customers_ai AFTER INSERT ON customers BEGIN
-                    INSERT INTO customers_fts(rowid, customer_id, full_name, email, phone, notes)
-                    VALUES (new.id, new.id, new.first_name || ' ' || new.last_name, new.email, new.phone, new.notes);
-                END;
-                """
-            )
-        )
-        conn.execute(
-            text(
-                """
-                CREATE TRIGGER IF NOT EXISTS customers_ad AFTER DELETE ON customers BEGIN
-                    INSERT INTO customers_fts(customers_fts, rowid, customer_id, full_name, email, phone, notes)
-                    VALUES('delete', old.id, old.id, old.first_name || ' ' || old.last_name, old.email, old.phone, old.notes);
-                END;
-                """
-            )
-        )
-        conn.execute(
-            text(
-                """
-                CREATE TRIGGER IF NOT EXISTS customers_au AFTER UPDATE ON customers BEGIN
-                    INSERT INTO customers_fts(customers_fts, rowid, customer_id, full_name, email, phone, notes)
-                    VALUES('delete', old.id, old.id, old.first_name || ' ' || old.last_name, old.email, old.phone, old.notes);
-                    INSERT INTO customers_fts(rowid, customer_id, full_name, email, phone, notes)
-                    VALUES (new.id, new.id, new.first_name || ' ' || new.last_name, new.email, new.phone, new.notes);
-                END;
-                """
-            )
-        )
-        conn.commit()
+    with ENGINE.begin() as conn:
+        Base.metadata.create_all(bind=conn)
+        _configure_full_text(conn)
 
 
 init_db()
