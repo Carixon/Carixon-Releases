@@ -110,11 +110,26 @@ def _configure_full_text(conn: Connection) -> None:
     )
 
 
+def _customers_table_exists(conn: Connection) -> bool:
+    result = conn.exec_driver_sql(
+        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='customers'"
+    ).fetchone()
+    return bool(result)
+
+
 def init_db() -> None:
     from . import models  # noqa: WPS433 - import to register models
 
+    # ensure core tables are created before we attempt to install the FTS triggers
+    Base.metadata.create_all(bind=ENGINE)
+
     with ENGINE.begin() as conn:
-        Base.metadata.create_all(bind=conn)
+        if not _customers_table_exists(conn):
+            LOGGER.warning(
+                "Customers table missing after metadata creation; skipping FTS configuration."
+            )
+            return
+
         _configure_full_text(conn)
 
 
