@@ -1,0 +1,21 @@
+{
+  "name": "Čeština",
+  "strings": {
+    "app_title": "JBS – Just Be Safe",
+    "activate_prompt": "Vaše licence není aktivní. Vytvořte žádost o aktivaci nebo importujte aktivační soubor.",
+    "create_request": "Vytvořit .jbsreq",
+    "import_response": "Importovat .jbsact",
+    "create_deactivation": "Vytvořit .jbsunreq",
+    "import_deactivation": "Importovat .jbsunact",
+    "activated_devices": "Aktivovaná zařízení",
+    "remaining_slots": "Zbývající sloty: {count}",
+    "license_expired": "Licence vypršela – kontaktujte Benjamina pro prodloužení.",
+    "time_rollback": "Zjištěna anomálie systémového času. Prosím znovu importujte poslední aktivační soubor.",
+    "about_author": "Autor: Benjamin",
+    "about_version": "Verze: {version}",
+    "menu_about": "O aplikaci",
+    "menu_language": "Jazyk",
+    "status_active": "Licence aktivní",
+    "status_inactive": "Licence uzamčena"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "English",
+  "strings": {
+    "app_title": "JBS – Just Be Safe",
+    "activate_prompt": "Your licence is not active. Create an activation request or import an activation file.",
+    "create_request": "Create .jbsreq",
+    "import_response": "Import .jbsact",
+    "create_deactivation": "Create .jbsunreq",
+    "import_deactivation": "Import .jbsunact",
+    "activated_devices": "Activated devices",
+    "remaining_slots": "Remaining slots: {count}",
+    "license_expired": "Licence expired – contact Benjamin for renewal.",
+    "time_rollback": "System clock anomaly detected. Please re-import the latest activation file.",
+    "about_author": "Author: Benjamin",
+    "about_version": "Version: {version}",
+    "menu_about": "About",
+    "menu_language": "Language",
+    "status_active": "Licence active",
+    "status_inactive": "Licence locked"
+  }
+}
