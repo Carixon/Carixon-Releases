@@ -1,0 +1,22 @@
+{
+  "app.title": "JBS – Just Be Safe",
+  "wizard.title": "License Activation Required",
+  "wizard.description": "Your license is not yet active on this device. Create an activation request (.jbsreq), send it to Benjamin and import the activation reply (.jbsact).",
+  "wizard.create_request": "Create activation request",
+  "wizard.import_activation": "Import activation response",
+  "license.status_active": "License active",
+  "license.status_inactive": "License inactive",
+  "license.details": "License details",
+  "license.plan": "Plan",
+  "license.expires": "Expires",
+  "license.max_devices": "Maximum devices",
+  "license.devices": "Activated devices",
+  "license.create_deactivation": "Create deactivation request",
+  "license.import_deactivation": "Import deactivation approval",
+  "about.title": "About",
+  "about.author": "Author: Benjamin",
+  "about.version": "Version",
+  "menu.language": "Language",
+  "menu.license": "License",
+  "menu.about": "About"
+}

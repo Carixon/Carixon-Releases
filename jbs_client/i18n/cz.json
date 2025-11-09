@@ -1,0 +1,22 @@
+{
+  "app.title": "JBS – Just Be Safe",
+  "wizard.title": "Vyžadována aktivace licence",
+  "wizard.description": "Vaše licence není na tomto zařízení aktivní. Vytvořte žádost o aktivaci (.jbsreq), odešlete ji Benjaminovi a importujte aktivační odpověď (.jbsact).",
+  "wizard.create_request": "Vytvořit žádost o aktivaci",
+  "wizard.import_activation": "Importovat aktivační odpověď",
+  "license.status_active": "Licence aktivní",
+  "license.status_inactive": "Licence neaktivní",
+  "license.details": "Detaily licence",
+  "license.plan": "Tarif",
+  "license.expires": "Platnost do",
+  "license.max_devices": "Maximální zařízení",
+  "license.devices": "Aktivovaná zařízení",
+  "license.create_deactivation": "Vytvořit žádost o deaktivaci",
+  "license.import_deactivation": "Importovat potvrzení deaktivace",
+  "about.title": "O aplikaci",
+  "about.author": "Autor: Benjamin",
+  "about.version": "Verze",
+  "menu.language": "Jazyk",
+  "menu.license": "Licence",
+  "menu.about": "O aplikaci"
+}
